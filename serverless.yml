@@ -1,0 +1,141 @@
+service: serverless-chaos-demo-larger
+
+frameworkVersion: ">=1.34.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: python3.7
+  memorySize: 128
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - logs:CreateLogStream
+        - ssm:DescribeParameters
+        - logs:CreateLogGroup
+        - logs:PutLogEvents
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - ssm:GetParameters
+        - ssm:GetParameter
+      Resource: "arn:aws:ssm:${opt:region, self:provider.region}:*:parameter/${self:service}*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+custom:
+  client:
+    bucketName: S3-BUCKET-NAME-FOR-WEBPAGE
+
+functions:
+  function1:
+    handler: items/function1.function
+    timeout: 3
+    environment:
+      LATENCY_INJECTION_PARAM:
+        Ref: function1Parameter
+    layers:
+      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+    events:
+      - http:
+          path: items/function1/
+          method: get
+          cors: true
+
+  function2:
+    handler: items/function2.function
+    timeout: 3
+    environment:
+      LATENCY_INJECTION_PARAM:
+        Ref: function2Parameter
+    layers:
+      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+    events:
+      - http:
+          path: items/function2/
+          method: get
+          cors: true
+
+  function3:
+    handler: items/function3.function
+    timeout: 3
+    environment:
+      LATENCY_INJECTION_PARAM:
+        Ref: function3Parameter
+    layers:
+      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+    events:
+      - http:
+          path: items/function3/
+          method: get
+          cors: true
+
+  function4:
+    handler: items/function4.function
+    timeout: 3
+    environment:
+      LATENCY_INJECTION_PARAM:
+        Ref: function4Parameter
+    layers:
+      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+    events:
+      - http:
+          path: items/function4/
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    serverlesschaostable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+    function1Parameter:
+      Type: 'AWS::SSM::Parameter'
+      Properties:
+        Name: ${self:service}-${opt:stage, self:provider.stage}-Function1
+        Type: String
+        Value: '{"delay": 500, "isEnabled": false}'
+    function2Parameter:
+      Type: 'AWS::SSM::Parameter'
+      Properties:
+        Name: ${self:service}-${opt:stage, self:provider.stage}-Function2
+        Type: String
+        Value: '{"delay": 500, "isEnabled": false}'
+    function3Parameter:
+      Type: 'AWS::SSM::Parameter'
+      Properties:
+        Name: ${self:service}-${opt:stage, self:provider.stage}-Function3
+        Type: String
+        Value: '{"delay": 500, "isEnabled": false}'
+    function4Parameter:
+      Type: 'AWS::SSM::Parameter'
+      Properties:
+        Name: ${self:service}-${opt:stage, self:provider.stage}-Function4
+        Type: String
+        Value: '{"delay": 500, "isEnabled": false}'
+    
+plugins:
+  - serverless-finch
+
+package:
+  exclude:
+    - ./client/**
