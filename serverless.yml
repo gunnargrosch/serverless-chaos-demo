@@ -1,4 +1,4 @@
-service: serverless-chaos-demo-larger
+service: serverless-chaos-demo
 
 frameworkVersion: ">=1.34.0 <2.0.0"
 
