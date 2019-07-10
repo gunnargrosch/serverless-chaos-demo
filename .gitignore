@@ -4,3 +4,4 @@
 *.pyo
 venv
 node_modules
+env.yml

@@ -33,17 +33,17 @@ provider:
 
 custom:
   client:
-    bucketName: S3-BUCKET-NAME-FOR-WEBPAGE
+    bucketName: ${file(env.yml):bucketName}
 
 functions:
   function1:
     handler: items/function1.function
     timeout: 3
     environment:
-      LATENCY_INJECTION_PARAM:
+      FAILURE_INJECTION_PARAM:
         Ref: function1Parameter
     layers:
-      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+      - ${file(env.yml):layer}
     events:
       - http:
           path: items/function1/
@@ -54,10 +54,10 @@ functions:
     handler: items/function2.function
     timeout: 3
     environment:
-      LATENCY_INJECTION_PARAM:
+      FAILURE_INJECTION_PARAM:
         Ref: function2Parameter
     layers:
-      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+      - ${file(env.yml):layer}
     events:
       - http:
           path: items/function2/
@@ -68,10 +68,10 @@ functions:
     handler: items/function3.function
     timeout: 3
     environment:
-      LATENCY_INJECTION_PARAM:
+      FAILURE_INJECTION_PARAM:
         Ref: function3Parameter
     layers:
-      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+      - ${file(env.yml):layer}
     events:
       - http:
           path: items/function3/
@@ -82,10 +82,10 @@ functions:
     handler: items/function4.function
     timeout: 3
     environment:
-      LATENCY_INJECTION_PARAM:
+      FAILURE_INJECTION_PARAM:
         Ref: function4Parameter
     layers:
-      - arn:aws:lambda:REGION:ACCOUNT:layer:LAYERNAME:VERSION
+      - ${file(env.yml):layer}
     events:
       - http:
           path: items/function4/
@@ -113,25 +113,25 @@ resources:
       Properties:
         Name: ${self:service}-${opt:stage, self:provider.stage}-Function1
         Type: String
-        Value: '{"delay": 500, "isEnabled": false}'
+        Value: ${file(env.yml):failure_conf}
     function2Parameter:
       Type: 'AWS::SSM::Parameter'
       Properties:
         Name: ${self:service}-${opt:stage, self:provider.stage}-Function2
         Type: String
-        Value: '{"delay": 500, "isEnabled": false}'
+        Value: ${file(env.yml):failure_conf}
     function3Parameter:
       Type: 'AWS::SSM::Parameter'
       Properties:
         Name: ${self:service}-${opt:stage, self:provider.stage}-Function3
         Type: String
-        Value: '{"delay": 500, "isEnabled": false}'
+        Value: ${file(env.yml):failure_conf}
     function4Parameter:
       Type: 'AWS::SSM::Parameter'
       Properties:
         Name: ${self:service}-${opt:stage, self:provider.stage}-Function4
         Type: String
-        Value: '{"delay": 500, "isEnabled": false}'
+        Value: ${file(env.yml):failure_conf}
     
 plugins:
   - serverless-finch
