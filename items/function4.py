@@ -3,27 +3,10 @@ import json
 from random import randint
 import boto3
 
-from chaos_lib import delayit
-
-@delayit
-def delay():
-    pass
-
-dynamodb = boto3.resource('dynamodb')
+from chaos_lib import *
 
 def function(event, context):
-    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
-    delay()
-
-    # fetch item from the database
-    #result = table.get_item(
-    #    Key={
-    #        'id': str(randint(1, 16))
-    #    }
-    #)
-
-    # create a response
     response = {
         "statusCode": 200,
         "headers": {
