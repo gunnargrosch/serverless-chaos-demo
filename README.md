@@ -8,6 +8,12 @@ The demo application consists of a simple serverless app containing three differ
 
 ![Serverless Chaos Demo Architecture](client/dist/images/serverless-chaos-demo-architecture.png?raw=true "Serverless Chaos Demo Architecture")
 
+## Videos showing demos
+
+* https://www.youtube.com/watch?v=vKurdrGMFpg
+* https://www.youtube.com/watch?v=Cw-JmAJHG-g
+* https://www.youtube.com/watch?v=xxogwzUMg7c
+
 ## How to install
 
 This is prepared to be installed using the Serverless Framework (https://serverless.com) and the Finch plugin. Make sure to have the Failure Injection Layer installed in your account (https://github.com/adhorn/FailureInjectionLayer) and an S3 bucket dedicated for the static webpage (the plugin will remove all contents before uploading).
