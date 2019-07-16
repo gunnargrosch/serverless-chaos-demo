@@ -6,6 +6,9 @@ provider:
   name: aws
   runtime: python3.7
   memorySize: 128
+  tracing:
+    apiGateway: true
+    lambda: true
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
@@ -16,6 +19,11 @@ provider:
         - logs:CreateLogGroup
         - logs:PutLogEvents
       Resource: "*"
+    - Effect: Allow
+      Action:
+        - lambda:GetFunctionConfiguration
+      Resource:
+        - "arn:aws:lambda:${opt:region, self:provider.region}:*:function:${self:service}*"
     - Effect: Allow
       Action:
         - ssm:GetParameters
@@ -78,25 +86,11 @@ functions:
           method: get
           cors: true
 
-  function4:
-    handler: items/function4.function
-    timeout: 3
-    environment:
-      FAILURE_INJECTION_PARAM:
-        Ref: function4Parameter
-    layers:
-      - ${file(env.yml):layer}
-    events:
-      - http:
-          path: items/function4/
-          method: get
-          cors: true
-
 resources:
   Resources:
     serverlesschaostable:
       Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
+      DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
           -
@@ -124,12 +118,6 @@ resources:
       Type: 'AWS::SSM::Parameter'
       Properties:
         Name: ${self:service}-${opt:stage, self:provider.stage}-Function3
-        Type: String
-        Value: ${file(env.yml):failure_conf}
-    function4Parameter:
-      Type: 'AWS::SSM::Parameter'
-      Properties:
-        Name: ${self:service}-${opt:stage, self:provider.stage}-Function4
         Type: String
         Value: ${file(env.yml):failure_conf}
     
