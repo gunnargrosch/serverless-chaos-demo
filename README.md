@@ -4,14 +4,9 @@ This example demonstrates how to use Adrian Hornsby's Failure Injection Layer (h
 
 ## Description
 
-The demo application consists of a simple serverless app containing four different functions behind an API Gateway and a static webpage showing the result of these functions. An example can be seen at (http://serverless-chaos-demo-larger.s3-website-eu-west-1.amazonaws.com/). By using the failure injection layer you are able to inject failure to each function and see on the page what happens.
+The demo application consists of a simple serverless app containing three different functions behind an API Gateway and a static webpage showing the result of these functions. The functions fetch an url for an image at random from a DynamoDB table. An example can be seen at (http://serverless-chaos-demo.s3-website-eu-west-1.amazonaws.com/). By using the failure injection layer you are able to inject failure to each function and see on the page what happens.
 
-## Videos
-
-These are two videos showing examples:
-
-* https://www.youtube.com/watch?v=xxogwzUMg7c
-* https://www.youtube.com/watch?v=Cw-JmAJHG-g
+![Serverless Chaos Demo Architecture](client/dist/images/serverless-chaos-demo-architecture.png?raw=true "Serverless Chaos Demo Architecture")
 
 ## How to install
 
@@ -26,37 +21,59 @@ npm install -g serverless
 ```bash
 npm install --save serverless-finch
 ```
-4. Update serverless.yml in the layer property on each function with the ARN to your Failure Injection Layer.
+4. Create an env.yml file in the root folder based on the env.yml.template contents.
 ```bash
-functions:
-  function1:
-    handler: items/function1.function
-    timeout: 3
-    environment:
-      LATENCY_INJECTION_PARAM:
-        Ref: function1Parameter
-    layers:
-      - 
-```
-5. Update serverelss.yml with the name of your S3 bucket for the static webpage.
-```bash
-custom:
-  client:
-    bucketName: 
+account: <your account number>
+bucketName: <your bucket name>
+layer: <arn of the lambda layer>
+failure_conf: '{"isEnabled": false, "delay": 400, "error_code": 404, "exception_msg": "I failed", "rate": 1}'
 ```
 5. Deploy the serverless application using Serverless Framework.
 ```bash
 sls deploy --region YOUR_PREFERRED_REGION --stage YOUR_PREFERRED_STAGE
 ```
-6. Open ./client/dist/js/main.js and update function1 through function4 variable with the URL to the GET endpoints from the above deployment output.
+6. Create an env.js file in the folder ./client/dist/assets/js/ based on the env.js.template contents (located in the same folder) with the endpoints from sls deploy output.
+```bash
+//Enter your API Gateway endpoints for each function here
+var function1 = "<function1 api gateway endpoint>";
+var function2 = "<function2 api gateway endpoint>";
+var function3 = "<function3 api gateway endpoint>";
+```
 7. Deploy the static webpage using Serverless Framework and the Finch plugin.
 ```bash
 sls client deploy --region YOUR_PREFERRED_REGION --stage YOUR_PREFERRED_STAGE
 ```
+8. Create an dynamodb.json file in the root folder based on the dynamodb.json.template contents. Replace YOUR_DYNAMODB_TABLE_NAME with your DynamoDB table name.
+```bash
+{
+    "YOUR_DYNAMODB_TABLE_NAME": [
+        {
+```
+9. Populate the DynamoDB table with data using AWS CLI and the created json file.
+```bash
+aws dynamodb batch-write-item --request-items file://dynamodb.json
+```
+10. Try it out!
 
 ## Notes
 
-This is a really early version of this. Features will be added on a regular basis.
+This is still a really early version of the app. Features will be added on a regular basis.
+
+## Changelog
+
+### 2019-07-16 v0.2
+
+* New UI with more visibility
+* AWS X-Ray enabled by default
+
+### 2019-07-10 v0.15
+
+* Variables moved to env.yml (Thanks to Adrian Hornsby)
+* Support for the new version of the Failure Injection Layer (Thanks to Adrian Hornsby)
+
+### 2019-07-09 v0.1
+
+* Initial release
 
 ## Authors
 
