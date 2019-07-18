@@ -66,6 +66,17 @@ Then it is likely that when you created the Failure Injection Layer (see the pre
 ```bash
 sls client deploy --region YOUR_PREFERRED_REGION --stage YOUR_PREFERRED_STAGE
 ```
+
+Note, if you get this error when you run this command:
+```
+Serverless: Configuring policy for bucket...
+ 
+  Serverless Error ---------------------------------------
+ 
+  ServerlessError: Access Denied
+```
+Then you might need to make your S3 bucket public.
+
 8. Create an dynamodb.json file in the root folder based on the dynamodb.json.template contents. Replace YOUR_DYNAMODB_TABLE_NAME with your DynamoDB table name.
 ```bash
 {
