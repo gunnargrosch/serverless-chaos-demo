@@ -16,7 +16,12 @@ The demo application consists of a simple serverless app containing three differ
 
 ## How to install
 
-This is prepared to be installed using the Serverless Framework (https://serverless.com) and the Finch plugin. Make sure to have the Failure Injection Layer installed in your account (https://github.com/adhorn/FailureInjectionLayer) and an S3 bucket dedicated for the static webpage (the plugin will remove all contents before uploading).
+**Prerequisite**
+This is prepared to be installed using the Serverless Framework (https://serverless.com) and the Finch plugin. (installation details below) 
+
+Make sure to have the Failure Injection Layer installed in your account (https://github.com/adhorn/FailureInjectionLayer) and you have the ARN to hand. If you follow this blog post here (https://medium.com/@adhorn/injecting-chaos-to-aws-lambda-functions-using-lambda-layers-2963f996e0ba) and here (https://medium.com/@adhorn/failure-injection-gain-confidence-in-your-serverless-application-ce6c0060f586)
+
+Create an S3 bucket dedicated for the static webpage (the plugin will remove all contents before uploading). You will need to make the S3 bucket public as step 7 below will fail if it is not.
 
 1. Clone the repository.
 2. Install Serverless Framework (if you don't already have it installed).
