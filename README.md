@@ -51,6 +51,17 @@ var function1 = "<function1 api gateway endpoint>";
 var function2 = "<function2 api gateway endpoint>";
 var function3 = "<function3 api gateway endpoint>";
 ```
+**Note**
+If you get an error when you test out these functions that look like the following:
+```
+{"errorMessage": "Unable to import module 'items/function1': No module named 'ssm_cache'", "errorType": "Runtime.ImportModuleError"}
+```
+or
+```
+"errorMessage": "Unable to import module 'items/function1': No module named 'ssm_cache'"
+```
+Then it is likely that when you created the Failure Injection Layer (see the prerequisite steps above) then you missed packaging up the hidden folder (.vendor) in the python folder that has all the dependencies. Go back and redeploy the layer and then update the layer arn and redeploy the app. This should fix the problem for you.
+
 7. Deploy the static webpage using Serverless Framework and the Finch plugin.
 ```bash
 sls client deploy --region YOUR_PREFERRED_REGION --stage YOUR_PREFERRED_STAGE
