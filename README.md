@@ -4,7 +4,7 @@ This example demonstrates how to use Adrian Hornsby's Failure Injection Layer (h
 
 ## Description
 
-The demo application consists of a simple serverless app containing three different functions behind an API Gateway and a static webpage showing the result of these functions. The functions fetch an url for an image at random from a DynamoDB table. An example can be seen at (http://serverless-chaos-demo.s3-website-eu-west-1.amazonaws.com/). By using the failure injection layer you are able to inject failure to each function and see on the page what happens.
+The demo application consists of a simple serverless app containing three different functions behind an API Gateway and a static webpage showing the result of these functions. The functions fetch an url for an image at random from a DynamoDB table. An example can be seen at (https://demo.serverlesschaos.com/). By using the failure injection layer you are able to inject failure to each function and see on the page what happens.
 
 ![Serverless Chaos Demo Architecture](client/dist/images/serverless-chaos-demo-architecture.png?raw=true "Serverless Chaos Demo Architecture")
 
