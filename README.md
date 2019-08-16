@@ -16,7 +16,13 @@ The demo application consists of a simple serverless app containing three differ
 
 ## How to install
 
-This is prepared to be installed using the Serverless Framework (https://serverless.com) and the Finch plugin. Make sure to have the Failure Injection Layer installed in your account (https://github.com/adhorn/FailureInjectionLayer) and an S3 bucket dedicated for the static webpage (the plugin will remove all contents before uploading).
+**Prerequisite**
+
+This is prepared to be installed using the Serverless Framework (https://serverless.com) and the Finch plugin. (installation details below) Before you begin you will also need to complete the following:
+
+* Make sure to have the Failure Injection Layer installed in your account (https://github.com/adhorn/FailureInjectionLayer) and you have the ARN to hand. If you follow this blog post here (https://medium.com/@adhorn/injecting-chaos-to-aws-lambda-functions-using-lambda-layers-2963f996e0ba) and here (https://medium.com/@adhorn/failure-injection-gain-confidence-in-your-serverless-application-ce6c0060f586)
+
+* Create an S3 bucket dedicated for the static webpage (the plugin will remove all contents before uploading). You will need to make the S3 bucket public as step 7 below will fail if it is not.
 
 1. Clone the repository.
 2. Install Serverless Framework (if you don't already have it installed).
@@ -45,10 +51,32 @@ var function1 = "<function1 api gateway endpoint>";
 var function2 = "<function2 api gateway endpoint>";
 var function3 = "<function3 api gateway endpoint>";
 ```
+**Note**
+If you get an error when you test out these functions that look like the following:
+```
+{"errorMessage": "Unable to import module 'items/function1': No module named 'ssm_cache'", "errorType": "Runtime.ImportModuleError"}
+```
+or
+```
+"errorMessage": "Unable to import module 'items/function1': No module named 'ssm_cache'"
+```
+Then it is likely that when you created the Failure Injection Layer (see the prerequisite steps above) then you missed packaging up the hidden folder (.vendor) in the python folder that has all the dependencies. Go back and redeploy the layer and then update the layer arn and redeploy the app. This should fix the problem for you.
+
 7. Deploy the static webpage using Serverless Framework and the Finch plugin.
 ```bash
 sls client deploy --region YOUR_PREFERRED_REGION --stage YOUR_PREFERRED_STAGE
 ```
+
+Note, if you get this error when you run this command:
+```
+Serverless: Configuring policy for bucket...
+ 
+  Serverless Error ---------------------------------------
+ 
+  ServerlessError: Access Denied
+```
+Then you might need to make your S3 bucket public.
+
 8. Create an dynamodb.json file in the root folder based on the dynamodb.json.template contents. Replace YOUR_DYNAMODB_TABLE_NAME with your DynamoDB table name.
 ```bash
 {
